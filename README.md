@@ -1,4 +1,6 @@
 # Isekai
+[![Release](https://jitpack.io/v/nertzhuldev/isekai.svg?style=flat-square)](https://jitpack.io/#nertzhuldev/isekai)
+
 Isekai is a port to the neoforge loader of the [Fantasy](https://github.com/NucleoidMC/fantasy) library
 that allows for dimensions to be created and destroyed at runtime on the server.
 
