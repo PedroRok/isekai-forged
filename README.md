@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
   // ...
-  modImplementation 'com.github.nertzhuldev:isekai:ISEKAI_VERSION'
+  implementation 'com.github.nertzhuldev:isekai:ISEKAI_VERSION'
 }
 ```
 
@@ -51,7 +51,7 @@ RuntimeWorldHandle worldHandle = isekai.openTemporaryWorld(worldConfig);
 
 // set a block in our created temporary world!
 ServerLevel world = worldHandle.asWorld();
-world.setBlockState(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
+world.setBlockAndUpdate(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
 
 // we don't need the world anymore, delete it!
 worldHandle.delete();
@@ -67,7 +67,7 @@ RuntimeWorldHandle worldHandle = isekai.getOrOpenPersistentWorld(ResourceLocatio
 
 // set a block in our created persistent world!
 ServerLevel world = worldHandle.asWorld();
-world.setBlockState(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
+world.setBlockAndUpdate(BlockPos.ZERO, Blocks.STONE.defaultBlockState());
 ```
 
 The main difference involves the addition of an `ResourceLocation` parameter which much be specified to name your dimension uniquely.
