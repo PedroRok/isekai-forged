@@ -1,7 +1,7 @@
 package xyz.nucleoid.isekai;
 
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -12,8 +12,8 @@ import net.minecraft.util.ProgressListener;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
 import org.apache.commons.io.FileUtils;
 import xyz.nucleoid.isekai.mixin.MinecraftServerAccess;
 
@@ -43,14 +43,14 @@ final class RuntimeWorldManager {
 
         var key = ResourceKey.create(Registries.LEVEL_STEM, worldKey.registry());
         if (!dimensionsRegistry.containsKey(key)) {
-            dimensionsRegistry.register(key, options, RegistrationInfo.BUILT_IN);
+            dimensionsRegistry.register(key, options, Lifecycle.stable());
         }
 
         ((RemoveFromRegistry<?>) dimensionsRegistry).fantasy$setFrozen(isFrozen);
         RuntimeWorld world = config.getWorldConstructor().createWorld(this.server, worldKey, config, style);
 
         this.serverAccess.getLevels().put(world.dimension(), world);
-        NeoForge.EVENT_BUS.post(new LevelEvent.Load(world));
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(world));
 
         // tick the world to ensure it is ready for use right away
         world.tick(() -> true);
@@ -62,7 +62,7 @@ final class RuntimeWorldManager {
         ResourceKey<Level> dimensionKey = world.dimension();
 
         if (this.serverAccess.getLevels().remove(dimensionKey, world)) {
-            NeoForge.EVENT_BUS.post(new LevelEvent.Unload(world));
+            MinecraftForge.EVENT_BUS.post(new LevelEvent.Unload(world));
 
             MappedRegistry<LevelStem> dimensionsRegistry = getDimensionsRegistry(this.server);
             RemoveFromRegistry.remove(dimensionsRegistry, dimensionKey.registry());
@@ -89,22 +89,27 @@ final class RuntimeWorldManager {
         if (this.serverAccess.getLevels().remove(dimensionKey, world)) {
             world.save(new ProgressListener() {
                 @Override
-                public void progressStartNoAbort(Component component) { }
+                public void progressStartNoAbort(Component component) {
+                }
 
                 @Override
-                public void progressStart(Component header) { }
+                public void progressStart(Component header) {
+                }
 
                 @Override
-                public void progressStage(Component stage) {}
+                public void progressStage(Component stage) {
+                }
 
                 @Override
-                public void progressStagePercentage(int percentage) { }
+                public void progressStagePercentage(int percentage) {
+                }
 
                 @Override
-                public void stop() { }
+                public void stop() {
+                }
             }, true, false);
 
-            NeoForge.EVENT_BUS.post(new LevelEvent.Unload(world));
+            MinecraftForge.EVENT_BUS.post(new LevelEvent.Unload(world));
 
             MappedRegistry<LevelStem> dimensionsRegistry = getDimensionsRegistry(RuntimeWorldManager.this.server);
             RemoveFromRegistry.remove(dimensionsRegistry, dimensionKey.registry());

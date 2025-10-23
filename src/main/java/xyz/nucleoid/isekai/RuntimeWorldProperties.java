@@ -13,7 +13,7 @@ public final class RuntimeWorldProperties extends DerivedLevelData {
         super(saveProperties, saveProperties.overworldData());
         this.config = config;
 
-        this.rules = new GameRules(saveProperties.enabledFeatures());
+        this.rules = new GameRules(saveProperties.getGameRules().);
         config.getGameRules().applyTo(this.rules, null);
     }
 

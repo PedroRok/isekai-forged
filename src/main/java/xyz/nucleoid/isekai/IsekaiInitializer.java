@@ -1,18 +1,19 @@
 package xyz.nucleoid.isekai;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import xyz.nucleoid.isekai.util.TransientChunkGenerator;
 import xyz.nucleoid.isekai.util.VoidChunkGenerator;
 
@@ -21,11 +22,11 @@ public final class IsekaiInitializer {
     public static ResourceKey<DimensionType> DEFAULT_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, resource("default"));
     public static final DeferredRegister<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATORS = DeferredRegister.create(Registries.CHUNK_GENERATOR, Isekai.ID);
 
-    public static final DeferredHolder<MapCodec<? extends ChunkGenerator>, MapCodec<VoidChunkGenerator>> VOID_GENERATOR = CHUNK_GENERATORS.register("void", () -> VoidChunkGenerator.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ChunkGenerator>, MapCodec<? extends ChunkGenerator>> TRANSIENT_GENERATOR = CHUNK_GENERATORS.register("transient", () -> TransientChunkGenerator.CODEC);
+    public static final RegistryObject<Codec<? extends ChunkGenerator>, Codec<VoidChunkGenerator>> VOID_GENERATOR = CHUNK_GENERATORS.register("void", () -> VoidChunkGenerator.CODEC);
+    public static final RegistryObject<Codec<? extends ChunkGenerator>, Codec<? extends ChunkGenerator>> TRANSIENT_GENERATOR = CHUNK_GENERATORS.register("transient", () -> TransientChunkGenerator.CODEC);
 
     public IsekaiInitializer(IEventBus eventBus) {
-        IEventBus forgeEventBus = NeoForge.EVENT_BUS;
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
         CHUNK_GENERATORS.register(eventBus);
 
@@ -33,7 +34,8 @@ public final class IsekaiInitializer {
         forgeEventBus.addListener(IsekaiInitializer::onServerStopping);
     }
 
-    private static void onServerPreTick(ServerTickEvent.Pre event) {
+    private static void onServerPreTick(TickEvent.ServerTickEvent event) {
+        if (event.getPhase().equals(TickEvent.Phase.START)) return;
         Isekai fantasy = Isekai.get(event.getServer());
         fantasy.tick();
     }
@@ -44,6 +46,6 @@ public final class IsekaiInitializer {
     }
 
     public static ResourceLocation resource(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Isekai.ID, path);
+        return new ResourceLocation(Isekai.ID, path);
     }
 }

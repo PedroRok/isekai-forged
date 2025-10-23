@@ -1,9 +1,11 @@
 package xyz.nucleoid.isekai.util;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.entity.animal.Cod;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -23,7 +25,7 @@ import java.util.function.Function;
  * @see Isekai#openTemporaryWorld(RuntimeWorldConfig)
  */
 public abstract class TransientChunkGenerator extends ChunkGenerator {
-    public static final MapCodec<? extends ChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+    public static final Codec<? extends ChunkGenerator> CODEC = RecordCodecBuilder.create(i -> i.group(
             RegistryOps.retrieveElement(Biomes.THE_VOID)
     ).apply(i, VoidChunkGenerator::new));
 
@@ -36,7 +38,7 @@ public abstract class TransientChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    protected final MapCodec<? extends ChunkGenerator> codec() {
+    protected final Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 }

@@ -1,6 +1,7 @@
 package xyz.nucleoid.isekai.util;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.*;
@@ -11,8 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,23 +19,24 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class VoidChunkGenerator extends ChunkGenerator {
-    public static final MapCodec<VoidChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Biome.CODEC.stable().fieldOf("biome").forGetter(VoidChunkGenerator::getBiome)
     ).apply(instance, instance.stable(VoidChunkGenerator::new)));
 
@@ -111,7 +111,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    protected MapCodec<? extends ChunkGenerator> codec() {
+    protected Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 
@@ -120,15 +120,11 @@ public class VoidChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion region, long seed, RandomState state, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunkAccess) {
-    }
-
-    @Override
     public void createReferences(WorldGenLevel level, StructureManager structureManager, ChunkAccess chunk) {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random, StructureManager structureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -180,16 +176,12 @@ public class VoidChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public WeightedList<MobSpawnSettings.SpawnerData> getMobsAt(Holder<Biome> biome, StructureManager structureManager, MobCategory category, BlockPos pos) {
-        return WeightedList.of();
-    }
-
-    @Override
-    public void createStructures(RegistryAccess registryAccess, ChunkGeneratorStructureState structureState, StructureManager structureManager, ChunkAccess chunk, StructureTemplateManager structureTemplateManager, ResourceKey<Level> level) {
-    }
-
-    @Override
     public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structureSetLookup, RandomState randomState, long seed) {
         return ChunkGeneratorStructureState.createForFlat(randomState, seed, biomeSource, Stream.empty());
+    }
+
+    @Override
+    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk, GenerationStep.Carving step) {
+
     }
 }

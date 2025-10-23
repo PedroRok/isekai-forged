@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.io.FileUtils;
@@ -164,7 +163,7 @@ public final class Isekai {
 
     void enqueueWorldDeletion(ServerLevel world) {
         this.server.execute(() -> {
-            world.getChunkSource().deactivateTicketsOnClosing();
+            world.getChunkSource().removeTicketsOnClosing();
             world.noSave = true;
             this.kickPlayers(world);
             this.deletionQueue.add(world);
@@ -174,7 +173,7 @@ public final class Isekai {
     void enqueueWorldUnloading(ServerLevel world) {
         this.server.execute(() -> {
             world.noSave = false;
-            world.getChunkSource().deactivateTicketsOnClosing();
+            world.getChunkSource().removeTicketsOnClosing();
             world.getChunkSource().tick(() -> true, false);
             this.kickPlayers(world);
             this.unloadingQueue.add(world);
@@ -214,10 +213,9 @@ public final class Isekai {
         List<ServerPlayer> players = new ArrayList<>(world.players());
 
         Vec3 pos = new Vec3(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
-        TeleportTransition target = new TeleportTransition(overworld, pos, Vec3.ZERO, spawnAngle, 0.0F, TeleportTransition.DO_NOTHING);
 
         for (ServerPlayer player : players) {
-            player.teleport(target);
+            player.teleportTo(overworld, pos.x, pos.y, pos.z, spawnAngle, 0);
         }
     }
 
@@ -247,6 +245,6 @@ public final class Isekai {
 
     private static ResourceLocation generateTemporaryWorldKey() {
         String key = RandomStringUtils.random(16, "abcdefghijklmnopqrstuvwxyz0123456789");
-        return ResourceLocation.fromNamespaceAndPath(Isekai.ID, key);
+        return new ResourceLocation(Isekai.ID, key);
     }
 }

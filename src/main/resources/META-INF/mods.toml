@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "LGPLv3"
+issueTrackerURL = "https://github.com/PedroRok/isekai-forged/issues"
+
+[[mods]]
+ modId = "isekai"
+ version = "0.6.7"
+ displayName = "Isekai Forged"
+ authors = "Nucleoid Contributors, Nertzhul, Rok"
+ logoFile = "icon.png"
+ description = '''Isekai is a port to neoforge of the Fantasy library that allows for dimensions to be created and destroyed at runtime on the server.'''
+
+[[mixins]]
+config = "isekai.mixins.json"
+
+[[dependencies.isekai]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.isekai]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
