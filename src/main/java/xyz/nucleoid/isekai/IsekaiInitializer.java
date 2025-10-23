@@ -20,10 +20,10 @@ import xyz.nucleoid.isekai.util.VoidChunkGenerator;
 @Mod(Isekai.ID)
 public final class IsekaiInitializer {
     public static ResourceKey<DimensionType> DEFAULT_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, resource("default"));
-    public static final DeferredRegister<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATORS = DeferredRegister.create(Registries.CHUNK_GENERATOR, Isekai.ID);
+    public static final DeferredRegister<Codec<? extends ChunkGenerator>> CHUNK_GENERATORS = DeferredRegister.create(Registries.CHUNK_GENERATOR, Isekai.ID);
 
-    public static final RegistryObject<Codec<? extends ChunkGenerator>, Codec<VoidChunkGenerator>> VOID_GENERATOR = CHUNK_GENERATORS.register("void", () -> VoidChunkGenerator.CODEC);
-    public static final RegistryObject<Codec<? extends ChunkGenerator>, Codec<? extends ChunkGenerator>> TRANSIENT_GENERATOR = CHUNK_GENERATORS.register("transient", () -> TransientChunkGenerator.CODEC);
+    public static final RegistryObject<Codec<VoidChunkGenerator>> VOID_GENERATOR = CHUNK_GENERATORS.register("void", () -> VoidChunkGenerator.CODEC);
+    public static final RegistryObject<Codec<? extends ChunkGenerator>> TRANSIENT_GENERATOR = CHUNK_GENERATORS.register("transient", () -> TransientChunkGenerator.CODEC);
 
     public IsekaiInitializer(IEventBus eventBus) {
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;

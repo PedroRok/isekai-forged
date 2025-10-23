@@ -96,9 +96,9 @@ public class VoidChunkGenerator extends ChunkGenerator {
     }
 
     // Create an empty (void) world!
-    public VoidChunkGenerator(MinecraftServer server) {
-        this(server.registryAccess().lookupOrThrow(Registries.BIOME), Biomes.THE_VOID);
-    }
+    //public VoidChunkGenerator(MinecraftServer server) {
+    //    this(server.registryAccess().lookupOrThrow(Registries.BIOME), Biomes.THE_VOID);
+    //}
 
     // Create a world with a given Biome (as an ID)
     public VoidChunkGenerator(MinecraftServer server, ResourceLocation biome) {

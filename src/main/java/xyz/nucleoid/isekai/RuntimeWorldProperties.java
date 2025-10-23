@@ -1,5 +1,7 @@
 package xyz.nucleoid.isekai;
 
+import com.mojang.serialization.DynamicLike;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.DerivedLevelData;
@@ -12,8 +14,7 @@ public final class RuntimeWorldProperties extends DerivedLevelData {
     public RuntimeWorldProperties(WorldData saveProperties, RuntimeWorldConfig config) {
         super(saveProperties, saveProperties.overworldData());
         this.config = config;
-
-        this.rules = new GameRules(saveProperties.getGameRules().);
+        this.rules = saveProperties.getGameRules().copy();
         config.getGameRules().applyTo(this.rules, null);
     }
 
