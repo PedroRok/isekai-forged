@@ -20,7 +20,7 @@ loom {
 
   runs {
     register("dev") {
-      vmArgs "-XX:+AllowEnhancedClassRedefinition", "-XX:+AllowRedefinitionToAddDeleteMethods -Dgeckolib.disable_examples=true"
+      //vmArgs "-XX:+AllowEnhancedClassRedefinition", "-XX:+AllowRedefinitionToAddDeleteMethods -Dgeckolib.disable_examples=true"
       client()
     }
     register("dev2") {

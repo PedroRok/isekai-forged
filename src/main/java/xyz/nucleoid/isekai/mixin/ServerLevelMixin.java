@@ -1,5 +1,6 @@
 package xyz.nucleoid.isekai.mixin;
 
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.ChunkSource;
@@ -21,7 +22,7 @@ public abstract class ServerLevelMixin implements IsekaiWorldAccess {
     @Unique private int isekai$tickTimeout;
 
     @Shadow public abstract List<ServerPlayer> players();
-    @Shadow public abstract ChunkSource getChunkSource();
+    @Shadow public abstract ServerChunkCache getChunkSource();
 
     @Override
     public void isekai$setTickWhenEmpty(boolean tickWhenEmpty) {

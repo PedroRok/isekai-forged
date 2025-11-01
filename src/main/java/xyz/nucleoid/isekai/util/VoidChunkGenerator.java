@@ -87,11 +87,11 @@ public class VoidChunkGenerator extends ChunkGenerator {
         this(Holder.direct(biome.get()));
     }
 
-    public VoidChunkGenerator(Registry<Biome> biomeRegistry) {
+    public VoidChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeRegistry) {
         this(biomeRegistry, Biomes.THE_VOID);
     }
 
-    public VoidChunkGenerator(Registry<Biome> biomeRegistry, ResourceKey<Biome> biome) {
+    public VoidChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeRegistry, ResourceKey<Biome> biome) {
         this(biomeRegistry.get(biome).orElseThrow());
     }
 
