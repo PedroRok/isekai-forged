@@ -11,7 +11,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.nucleoid.isekai.util.TransientChunkGenerator;
@@ -25,22 +27,22 @@ public final class IsekaiInitializer {
     public static final RegistryObject<Codec<VoidChunkGenerator>> VOID_GENERATOR = CHUNK_GENERATORS.register("void", () -> VoidChunkGenerator.CODEC);
     public static final RegistryObject<Codec<? extends ChunkGenerator>> TRANSIENT_GENERATOR = CHUNK_GENERATORS.register("transient", () -> TransientChunkGenerator.CODEC);
 
-    public IsekaiInitializer(IEventBus eventBus) {
-        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+    public IsekaiInitializer() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        CHUNK_GENERATORS.register(eventBus);
-
-        forgeEventBus.addListener(IsekaiInitializer::onServerPreTick);
-        forgeEventBus.addListener(IsekaiInitializer::onServerStopping);
+        CHUNK_GENERATORS.register(bus);
+        bus.register(this);
     }
 
-    private static void onServerPreTick(TickEvent.ServerTickEvent event) {
+    @SubscribeEvent
+    public static void onServerPreTick(TickEvent.ServerTickEvent event) {
         if (event.getPhase().equals(TickEvent.Phase.START)) return;
         Isekai fantasy = Isekai.get(event.getServer());
         fantasy.tick();
     }
 
-    private static void onServerStopping(ServerStoppingEvent event) {
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
         Isekai fantasy = Isekai.get(event.getServer());
         fantasy.onServerStopping();
     }

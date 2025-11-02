@@ -3,6 +3,7 @@ package xyz.nucleoid.isekai.mixin.registry;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.core.*;
@@ -29,7 +30,7 @@ public abstract class MappedRegistryMixin<T> implements RemoveFromRegistry<T>, W
     @Shadow @Final private Map<ResourceKey<T>, Holder.Reference<T>> byKey;
     @Shadow @Final private Map<ResourceKey<T>, Lifecycle> lifecycles;
     @Shadow @Final private ObjectList<Holder.Reference<T>> byId;
-    @Shadow @Final private Reference2IntMap<T> toId;
+    @Shadow @Final private Object2IntMap<T> toId;
     @Shadow @Final ResourceKey<? extends Registry<T>> key;
     @Shadow private boolean frozen;
 
@@ -71,10 +72,10 @@ public abstract class MappedRegistryMixin<T> implements RemoveFromRegistry<T>, W
         return this.frozen;
     }
 
-    @ModifyReturnValue(method = "listElements", at = @At("RETURN"))
-    public Stream<Holder.Reference<T>> fixEntryStream(Stream<Holder.Reference<T>> original) {
-        return original.filter(Objects::nonNull);
-    }
+    //@ModifyReturnValue(method = "", at = @At("RETURN"))
+    //public Stream<Holder.Reference<T>> fixEntryStream(Stream<Holder.Reference<T>> original) {
+    //    return original.filter(Objects::nonNull);
+    //}
 
 
 }
